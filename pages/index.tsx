@@ -2,10 +2,18 @@ import Head from 'next/head'
 import { Inter } from 'next/font/google'
 import Navbar from '../components/Navbar'
 import Banner from '../components/Banner'
+import { Product } from './../type.d';
+import Products from '../components/Products';
 
+
+
+interface Props {
+  productData:Product
+}
 const inter = Inter({ subsets: ['latin'] })
 
-export default function Home() {
+export default function Home({productData}: Props) {
+  // console.log(productData)
   return (
     <>
       <Head>
@@ -14,13 +22,23 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/smallogo.ico" />
       </Head>
-      <main className='bg-lightBlue'>
+      <main className='bg-white'>
         <Navbar />
         <div className='max-w-contentContainer mx-auto bg-white'>
           
           <Banner />
+          <Products productData={productData}/>
         </div>
       </main>
     </>
   )
 }
+
+export const getServerSideProps = async () => {
+  const res = await fetch("http://localhost:3000/api/productdata")
+  const productData = await res.json()
+
+  return{
+    props: {productData},
+  };
+};
